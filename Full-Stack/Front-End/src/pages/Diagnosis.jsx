@@ -1,15 +1,9 @@
 import MainLayout from "../components/layout/MainLayout";
-
 import { useRef, useState } from "react";
-
 import { useForm } from "react-hook-form";
-
 import { motion } from "framer-motion";
-
 import toast, { Toaster } from "react-hot-toast";
-
 import Webcam from "react-webcam";
-
 import api from "../services/api";
 
 import {

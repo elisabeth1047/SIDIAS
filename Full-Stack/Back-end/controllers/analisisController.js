@@ -3,6 +3,145 @@ import { exec } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+function calculateFusion(rfResult, mnResult) {
+
+    const rfWeight = rfResult.confidence * 0.7;
+    const mnWeight = mnResult.confidence * 0.3;
+
+    const finalScore = rfWeight + mnWeight;
+
+    // Default mengikuti hasil Random Forest
+    let status_stunting = rfResult.status_stunting;
+    let tingkat_risiko = rfResult.tingkat_risiko;
+    let status_detail = rfResult.status_detail;
+    let tingkat_risiko_detail = rfResult.tingkat_risiko_detail;
+    let rekomendasi = rfResult.rekomendasi;
+    let rekomendasi_detail = rfResult.rekomendasi_detail;
+    let indikator = "WHO Antropometri + Visual (MobileNetV2)";
+
+    let indikator_detail =
+    `Antropometri: ${rfResult.indikator_detail}
+    Visual: ${mnResult.indikator} - ${mnResult.status_stunting}
+    (Confidence: ${(mnResult.confidence * 100).toFixed(2)}%)`;
+
+    let z_score = rfResult.z_score;
+
+    let model_version = "Ensemble (Random Forest + MobileNetV2)";
+
+    // Jika Random Forest mendeteksi stunting,
+    // hasil akhir tetap Stunting
+    if (rfResult.status_stunting === "Terindikasi Stunting") {
+        status_stunting = "Terindikasi Stunting";
+        tingkat_risiko = "Tinggi";
+
+        status_detail =
+            "Hasil analisis antropometri menunjukkan anak terindikasi mengalami stunting. Analisis visual digunakan sebagai informasi pendukung.";
+
+        tingkat_risiko_detail =
+            "Anak memiliki risiko tinggi mengalami stunting sehingga diperlukan evaluasi dan penanganan lebih lanjut.";
+
+        rekomendasi =
+            "Segera konsultasikan ke fasilitas kesehatan, lakukan evaluasi status gizi, serta penuhi kebutuhan nutrisi anak.";
+
+        rekomendasi_detail =
+            "Lakukan pemeriksaan rutin di posyandu atau dokter anak, tingkatkan konsumsi protein, vitamin, dan makanan bergizi seimbang.";
+
+    }
+
+    // Jika Random Forest Tidak Stunting
+    // tetapi MobileNet mendeteksi Stunting,
+    // menggunakan threshold confidence
+   else if (
+        rfResult.status_stunting === "Tidak Stunting" &&
+        mnResult.status_stunting === "Terindikasi Stunting"
+    ) {
+
+        if (finalScore >= 0.75) {
+
+            status_stunting = "Terindikasi Stunting";
+            tingkat_risiko = "Tinggi";
+
+            status_detail =
+                "Analisis gabungan antropometri dan citra menunjukkan indikasi stunting.";
+
+            tingkat_risiko_detail =
+                "Risiko stunting tinggi berdasarkan kombinasi kedua model.";
+
+            rekomendasi =
+                "Segera lakukan pemeriksaan lanjutan ke fasilitas kesehatan.";
+
+            rekomendasi_detail =
+                "Lakukan evaluasi status gizi dan pemantauan pertumbuhan secara berkala.";
+
+        } else {
+
+            status_stunting = "Tidak Stunting";
+            tingkat_risiko = "Rendah";
+
+            status_detail =
+                "Data antropometri menunjukkan pertumbuhan anak masih normal.";
+
+            tingkat_risiko_detail =
+                "Risiko stunting masih rendah berdasarkan hasil gabungan.";
+
+            rekomendasi =
+                "Pertahankan pola makan bergizi seimbang.";
+
+            rekomendasi_detail =
+                "Lanjutkan pemantauan pertumbuhan setiap bulan.";
+
+        }
+
+    }
+
+    // Jika MobileNet hanya mendeteksi Malnutrisi,
+    // diagnosis tetap mengikuti Random Forest
+    else if (
+        mnResult.status_stunting === "Terindikasi Malnutrisi"
+    ) {
+
+        status_stunting = rfResult.status_stunting;
+        tingkat_risiko = "Sedang";
+
+        status_detail =
+            "Data antropometri menunjukkan pertumbuhan anak masih normal, namun analisis citra mendeteksi indikasi malnutrisi sehingga kondisi gizi perlu mendapat perhatian.";
+
+        tingkat_risiko_detail =
+            "Risiko stunting berada pada kategori sedang karena ditemukan indikasi malnutrisi dari analisis visual meskipun hasil antropometri masih normal.";
+
+        rekomendasi =
+            "Perbaiki kualitas asupan gizi, tingkatkan konsumsi protein dan vitamin, serta lakukan pemantauan pertumbuhan secara berkala.";
+
+        rekomendasi_detail =
+            "Disarankan melakukan evaluasi pola makan dan pemeriksaan status gizi apabila kondisi tidak membaik.";
+
+
+    }
+
+    return {
+        rfWeight,
+        mnWeight,
+        finalScore,
+
+        status_stunting,
+        status_detail,
+
+        tingkat_risiko,
+        tingkat_risiko_detail,
+
+        indikator,
+        indikator_detail,
+
+        z_score,
+
+        rekomendasi,
+        rekomendasi_detail,
+
+        model_version
+    };
+
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -107,28 +246,65 @@ export const getAllAnalisis = async (req, res, next) => {
 export const getAnalisisById = async (req, res, next) => {
   try {
     const { id } = req.params;
+
     let result;
-    if (req.user.role === 'admin') {
-      result = await pool.query('SELECT * FROM analisis WHERE id = $1', [id]);
-    } else {
-      result = await pool.query(`
-        SELECT a.* 
+
+    if (req.user.role === "admin") {
+      result = await pool.query(
+        `
+        SELECT
+          a.*,
+          db.nama,
+          db.jenis_kelamin,
+          db.tanggal_lahir,
+          db.umur_bulan,
+          db.berat_badan,
+          db.tinggi_badan,
+          db.foto_url,
+          db.created_by
         FROM analisis a
-        JOIN data_balita db ON a.data_id = db.id
-        WHERE a.id = $1 AND db.created_by = $2
-      `, [id, req.user.nik]);
+        JOIN data_balita db
+          ON a.data_id = db.id
+        WHERE a.id = $1
+        `,
+        [id]
+      );
+    } else {
+      result = await pool.query(
+        `
+        SELECT
+          a.*,
+          db.nama,
+          db.jenis_kelamin,
+          db.tanggal_lahir,
+          db.umur_bulan,
+          db.berat_badan,
+          db.tinggi_badan,
+          db.foto_url,
+          db.created_by
+        FROM analisis a
+        JOIN data_balita db
+          ON a.data_id = db.id
+        WHERE a.id = $1
+          AND db.created_by = $2
+        `,
+        [id, req.user.nik]
+      );
     }
 
     if (result.rowCount === 0) {
       return res.status(404).json({
         success: false,
-        message: 'Data analisis tidak ditemukan atau Anda tidak memiliki akses'
+        message:
+          "Data analisis tidak ditemukan atau Anda tidak memiliki akses",
       });
     }
 
+    console.log("HASIL QUERY:", result.rows[0]);
+    
     res.status(200).json({
       success: true,
-      data: result.rows[0]
+      data: result.rows[0],
     });
   } catch (error) {
     next(error);
@@ -233,42 +409,23 @@ export const createAnalisis = async (req, res, next) => {
           runImageAIPrediction(fotoPath)
         ]);
 
-        // LOGIKA ENSEMBLE:
-        // 1. status_stunting utama diambil dari Random Forest (antropometri standar medis klinis WHO)
-        status_stunting = rfResult.status_stunting;
-        
-        // 2. status_detail menggabungkan keduanya
-        status_detail = `Fisik (WHO): ${rfResult.status_detail} | Visual (Foto): ${mnResult.status_detail}`;
-        
-        // 3. tingkat_risiko: ambil risiko tertinggi demi keselamatan diagnosa (Tinggi > Sedang > Rendah)
-        if (rfResult.tingkat_risiko === 'Tinggi' || mnResult.tingkat_risiko === 'Tinggi') {
-          tingkat_risiko = 'Tinggi';
-        } else if (mnResult.tingkat_risiko === 'Sedang' || rfResult.tingkat_risiko === 'Sedang') {
-          tingkat_risiko = 'Sedang';
-        } else {
-          tingkat_risiko = 'Rendah';
-        }
+        console.log("Random Forest:", rfResult);
+        console.log("MobileNet:", mnResult);
 
-        // 4. tingkat_risiko_detail menggabungkan penjelasan risiko keduanya
-        tingkat_risiko_detail = `Fisik: ${rfResult.tingkat_risiko_detail} | Visual: ${mnResult.tingkat_risiko_detail}`;
-        
-        // 5. indikator
-        indikator = 'WHO Antropometri + Visual (MobileNetV2)';
-        
-        // 6. indikator_detail
-        indikator_detail = `Fisik: ${rfResult.indikator_detail} | Visual: ${mnResult.indikator_detail}`;
-        
-        // 7. z_score diisi dari Random Forest (klinis)
-        z_score = rfResult.z_score;
-        
-        // 8. rekomendasi menggabungkan keduanya
-        rekomendasi = `Rekomendasi Klinis: ${rfResult.rekomendasi} Rekomendasi Visual: ${mnResult.rekomendasi}`;
-        
-        // 9. rekomendasi_detail menggabungkan keduanya
-        rekomendasi_detail = `Rekomendasi Klinis: ${rfResult.rekomendasi_detail} Rekomendasi Visual: ${mnResult.rekomendasi_detail}`;
-        
-        // 10. model_version
-        model_version = 'Ensemble (Random Forest + MobileNetV2)';
+        const fusionResult = calculateFusion(rfResult, mnResult);
+        console.log("Fusion Result:", fusionResult);
+
+        // Menggunakan seluruh hasil Fusion
+        status_stunting = fusionResult.status_stunting;
+        status_detail = fusionResult.status_detail;
+        tingkat_risiko = fusionResult.tingkat_risiko;
+        tingkat_risiko_detail = fusionResult.tingkat_risiko_detail;
+        indikator = fusionResult.indikator;
+        indikator_detail = fusionResult.indikator_detail;
+        z_score = fusionResult.z_score;
+        rekomendasi = fusionResult.rekomendasi;
+        rekomendasi_detail = fusionResult.rekomendasi_detail;
+        model_version = fusionResult.model_version;
 
       } else {
         // Hanya jalankan Random Forest

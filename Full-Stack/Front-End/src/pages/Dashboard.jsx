@@ -74,8 +74,8 @@ const Dashboard = () => {
               </p>
 
               {/* BUTTON */}
-              <div className="mt-8">
-                <button
+              <div className="mt-8 flex gap-4">
+                <button 
                   onClick={() => {
                     const isLogin = localStorage.getItem("sidias_login");
 
@@ -88,6 +88,21 @@ const Dashboard = () => {
                   className="bg-white text-teal-600 px-7 py-4 rounded-2xl font-semibold shadow-xl hover:scale-105 transition-all flex items-center gap-3"
                 >
                   Mulai Pemeriksaan
+                  <FaArrowRight />
+                </button>
+                <button
+                  onClick={() => {
+                    const isLogin = localStorage.getItem("sidias_login");
+
+                    if (!isLogin) {
+                      return navigate("/login");
+                    }
+
+                    navigate("/history");
+                  }}
+                  className="bg-white text-teal-600 px-7 py-4 rounded-2xl font-semibold shadow-xl hover:scale-105 transition-all flex items-center gap-3"
+                >
+                  Riwayat Pemeriksaan
                   <FaArrowRight />
                 </button>
               </div>

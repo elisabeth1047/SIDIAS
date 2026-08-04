@@ -83,6 +83,7 @@ def main():
         # Output JSON ke stdout
         result = {
             "status_stunting": status_detail,
+            "confidence": round(confidence, 4),
             "status_detail": prediction_detail,
             "tingkat_risiko": tingkat_risiko,
             "tingkat_risiko_detail": prediction_detail,

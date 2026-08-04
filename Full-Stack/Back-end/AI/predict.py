@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import warnings
 
+
 # Suppress sklearn and other warnings to avoid cluttering stdout/stderr
 warnings.filterwarnings("ignore")
 
@@ -58,6 +59,15 @@ def main():
 
         # 5. Predict (0 = Stunting, 1 = Tidak Stunting)
         pred = int(model.predict(features_scaled_df)[0])
+        
+        # Ambil probabilitas prediksi
+        prob = model.predict_proba(features_scaled_df)[0]
+
+        # Confidence sesuai hasil prediksi
+        if pred == 0:
+            confidence = float(prob[0])
+        else:
+            confidence = float(prob[1])
 
         # 6. Generate details & recommendations
         if pred == 0:
@@ -73,7 +83,8 @@ def main():
 
         # Output JSON
         result = {
-            "status_stunting": status,
+            "status_stunting": status,\
+            "confidence": round(confidence, 4),
             "status_detail": status,
             "tingkat_risiko": tingkat_risiko,
             "tingkat_risiko_detail": prediction_detail,

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 import Dashboard from "./pages/Dashboard";
 import Diagnosis from "./pages/Diagnosis";
+import Detail from "./pages/Detail";
 import History from "./pages/History";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -42,6 +42,15 @@ function App() {
           element={
             <ProtectedRoute>
               <History />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/detail/:id"
+          element={
+            <ProtectedRoute>
+              <Detail />
             </ProtectedRoute>
           }
         />

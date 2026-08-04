@@ -1,12 +1,9 @@
 import MainLayout from "../components/layout/MainLayout";
-
 import { motion } from "framer-motion";
-
 import { useEffect, useState } from "react";
-
 import toast, { Toaster } from "react-hot-toast";
-
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 import {
   FaSearch,
@@ -17,6 +14,7 @@ import {
 } from "react-icons/fa";
 
 const History = () => {
+  const navigate = useNavigate(); 
   const [historyData, setHistoryData] = useState([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -220,6 +218,16 @@ const History = () => {
                     {item.rekomendasi}
                   </p>
                 </div>
+
+                <div className="flex justify-end pt-2">
+                    <button
+                      onClick={() => { console.log(item);
+                      navigate(`/detail/${item.id}`); }}
+                      className="px-6 py-3 bg-white text-teal-600 font-semibold rounded-xl shadow-lg hover:bg-gray-100 transition duration-300"
+                    >
+                      Lihat Detail →
+                    </button>
+                  </div>
               </motion.div>
             ))}
           </div>
