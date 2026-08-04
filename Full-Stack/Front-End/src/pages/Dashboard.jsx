@@ -3,7 +3,6 @@ import Footer from "../components/ui/Footer";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-
 import {
   FaHeartbeat,
   FaChild,
@@ -43,132 +42,128 @@ const Dashboard = () => {
     <MainLayout>
       <div className="space-y-8">
 
-        {/* HERO */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-[40px] bg-gradient-to-br from-teal-400 via-cyan-500 to-sky-500 p-8 md:p-12 text-white shadow-2xl"
+{/* HERO */}
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-500 via-cyan-500 to-sky-500 p-8 lg:p-12 text-white shadow-lg"
+>
+  {/* Background Decoration */}
+  <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+
+  <div className="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+
+    {/* LEFT */}
+    <div>
+
+      <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
+        <FaHeartbeat />
+        SIDIAS Healthcare Dashboard
+      </div>
+
+      <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+        Sistem Diagnosis
+        <br />
+        Stunting Anak
+      </h1>
+
+      <p className="mt-6 text-white/90 text-lg leading-relaxed max-w-lg">
+        Membantu kader Posyandu dan orang tua melakukan deteksi dini stunting
+        melalui pemeriksaan data pertumbuhan anak secara cepat, praktis,
+        dan informatif.
+      </p>
+
+      <div className="mt-8 flex flex-wrap gap-4">
+
+        <button
+          onClick={() => {
+            const isLogin = localStorage.getItem("sidias_login");
+
+            if (!isLogin) return navigate("/login");
+
+            navigate("/diagnosis");
+          }}
+          className="bg-white text-teal-600 px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
         >
+          Mulai Pemeriksaan
+          <FaArrowRight />
+        </button>
 
-          {/* Blur Background */}
-          <div className="absolute -top-24 -right-24 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+        <button
+          onClick={() => {
+            const isLogin = localStorage.getItem("sidias_login");
 
-          <div className="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+            if (!isLogin) return navigate("/login");
 
-            {/* LEFT */}
-            <div>
+            navigate("/history");
+          }}
+          className="border border-white/40 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-teal-600 transition-all"
+        >
+          Riwayat Pemeriksaan
+        </button>
 
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-2 rounded-full mb-6">
-                <FaHeartbeat />
-                SIDIAS Healthcare Dashboard
-              </div>
+      </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-                Sistem Deteksi
-                <br />
-                Stunting Anak
-              </h1>
+    </div>
 
-              <p className="mt-6 text-white/90 text-lg leading-relaxed max-w-2xl">
-                Platform pelayanan posyandu modern untuk membantu kader dan orang tua memantau pertumbuhan anak secara cepat, praktis, dan informatif.
-              </p>
+    {/* RIGHT */}
+    <div className="hidden lg:block">
 
-              {/* BUTTON */}
-              <div className="mt-8 flex gap-4">
-                <button 
-                  onClick={() => {
-                    const isLogin = localStorage.getItem("sidias_login");
+      <div className="bg-white/15 backdrop-blur-md rounded-3xl p-6 border border-white/20">
 
-                    if (!isLogin) {
-                      return navigate("/login");
-                    }
+        <h3 className="text-xl font-semibold mb-6">
+          Fitur Utama SIDIAS
+        </h3>
 
-                    navigate("/diagnosis");
-                  }}
-                  className="bg-white text-teal-600 px-7 py-4 rounded-2xl font-semibold shadow-xl hover:scale-105 transition-all flex items-center gap-3"
-                >
-                  Mulai Pemeriksaan
-                  <FaArrowRight />
-                </button>
-                <button
-                  onClick={() => {
-                    const isLogin = localStorage.getItem("sidias_login");
+        <div className="space-y-5">
 
-                    if (!isLogin) {
-                      return navigate("/login");
-                    }
-
-                    navigate("/history");
-                  }}
-                  className="bg-white text-teal-600 px-7 py-4 rounded-2xl font-semibold shadow-xl hover:scale-105 transition-all flex items-center gap-3"
-                >
-                  Riwayat Pemeriksaan
-                  <FaArrowRight />
-                </button>
-              </div>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl">
+              📷
             </div>
 
-            {/* RIGHT STATS */}
-            <div className="grid grid-cols-2 gap-5">
-
-              <div className="bg-white/15 backdrop-blur-lg rounded-3xl p-6 border border-white/10">
-                <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center text-2xl mb-4">
-                  <FaChild />
-                </div>
-
-                <h2 className="text-3xl font-bold">
-                  128
-                </h2>
-
-                <p className="text-white/80 mt-2">
-                  Data Anak
-                </p>
-              </div>
-
-              <div className="bg-white/15 backdrop-blur-lg rounded-3xl p-6 border border-white/10">
-                <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center text-2xl mb-4">
-                  <FaClipboardCheck />
-                </div>
-
-                <h2 className="text-3xl font-bold">
-                  96
-                </h2>
-
-                <p className="text-white/80 mt-2">
-                  Pemeriksaan
-                </p>
-              </div>
-
-              <div className="bg-white/15 backdrop-blur-lg rounded-3xl p-6 border border-white/10">
-                <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center text-2xl mb-4">
-                  <FaChartLine />
-                </div>
-
-                <h2 className="text-3xl font-bold">
-                  82%
-                </h2>
-
-                <p className="text-white/80 mt-2">
-                  Pertumbuhan Baik
-                </p>
-              </div>
-
-              <div className="bg-white/15 backdrop-blur-lg rounded-3xl p-6 border border-white/10">
-                <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center text-2xl mb-4">
-                  <FaHeartbeat />
-                </div>
-
-                <h2 className="text-3xl font-bold">
-                  Aktif
-                </h2>
-
-                <p className="text-white/80 mt-2">
-                  Monitoring
-                </p>
-              </div>
+            <div>
+              <h4 className="font-semibold">Diagnosis</h4>
+              <p className="text-sm text-white/80">
+                Analisis kondisi anak berdasarkan data pemeriksaan.
+              </p>
             </div>
           </div>
-        </motion.div>
+
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl">
+              📊
+            </div>
+
+            <div>
+              <h4 className="font-semibold">Monitoring</h4>
+              <p className="text-sm text-white/80">
+                Memantau pertumbuhan anak secara berkala.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl">
+              ❤️
+            </div>
+
+            <div>
+              <h4 className="font-semibold">Edukasi</h4>
+              <p className="text-sm text-white/80">
+                Informasi gizi dan pencegahan stunting.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</motion.div>
 
         {/* INFORMASI KESEHATAN */}
         <div>
