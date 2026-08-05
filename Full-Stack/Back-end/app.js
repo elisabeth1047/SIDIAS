@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://sidias-flame.vercel.app"
+    "https://sidias-4f35uq6ez-elisabeth1047s-projects.vercel.app"
   ],
   credentials: true,
 }));
