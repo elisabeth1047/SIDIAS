@@ -16,7 +16,13 @@ const app = express();
 // Middleware untuk mem-parsing body JSON
 app.use(express.json());
 // Middleware CORS agar bisa diakses dari frontend
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://sidias-flame.vercel.app"
+  ],
+  credentials: true,
+}));
 // Middleware untuk mencatat log request
 app.use(logger);
 // Middleware static folder uploads
