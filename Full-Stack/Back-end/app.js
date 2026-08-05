@@ -23,6 +23,13 @@ app.use(cors({
   ],
   credentials: true,
 }));
+
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  console.log("Body:", req.body);
+  next();
+});
+
 // Middleware untuk mencatat log request
 app.use(logger);
 // Middleware static folder uploads
