@@ -17,11 +17,18 @@ const app = express();
 app.use(express.json());
 // Middleware CORS agar bisa diakses dari frontend
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://sidias-4f35uq6ez-elisabeth1047s-projects.vercel.app"
-  ],
-  credentials: true,
+  origin: function (origin, callback) {
+    if (
+      !origin ||
+      origin.endsWith(".vercel.app") ||
+      origin === "http://localhost:5173"
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Blocked by CORS"));
+    }
+  },
+  credentials: true
 }));
 
 app.use((req, res, next) => {
