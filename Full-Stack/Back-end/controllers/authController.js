@@ -14,10 +14,17 @@ export const registerUser = async (req, res, next) => {
       });
     }
 
-    if (nik.length < 16) {
+    if (nik.length !== 16) {
       return res.status(400).json({
         success: false,
-        message: 'NIK harus minimal 16 karakter'
+        message: 'NIK harus 16 karakter'
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password minimal 8 karakter'
       });
     }
 
