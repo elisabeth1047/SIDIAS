@@ -17,7 +17,7 @@ const menus = [
     icon: <FaHome />,
   },
   {
-    name: "Pelayanan",
+    name: "Periksa Stunting",
     path: "/diagnosis",
     icon: <FaHeartbeat />,
   },
