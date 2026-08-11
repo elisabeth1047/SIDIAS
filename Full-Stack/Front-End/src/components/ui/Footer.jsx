@@ -100,7 +100,7 @@ const Footer = () => {
                 }
                 className="block text-white/80 hover:text-white transition-all text-left"
               >
-                Pelayanan
+                Periksa Stunting
               </button>
 
               {/* RIWAYAT */}
