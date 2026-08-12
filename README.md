@@ -114,9 +114,7 @@ Ketika database PostgreSQL pertama kali dibuat, sistem backend secara otomatis m
 ---
 
 ## 🌐 Akses Layanan Aplikasi
-* **Frontend Web App:** [http://localhost](http://localhost) (Port 80)
-* **Backend API Base URL:** [http://localhost:5000/api](http://localhost:5000/api) (Port 5000)
-* **Database PostgreSQL:** Port `5432` (Username: `postgres`, Password: `sidias_password`, Database Name: `sidias`)
+https://sidias-flame.vercel.app
 
 ---
 
