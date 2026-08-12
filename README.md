@@ -1,122 +1,141 @@
-# SIDIAS: Sistem Diagnosis Anak Stunting Berbasis Computer Vision dan AI untuk Penanganan Gizi Terpadu
+# SIDIAS: AI and Computer Vision-Based Child Stunting Diagnosis System for Integrated Nutritional Management
 
-**Tema Capstone:** Healthy Lives & Well-being  
-**ID Tim Capstone Project:** CC26-PSU020
+**Capstone Theme:** Healthy Lives & Well-being
+**Capstone Project Team ID:** CC26-PSU020
 
-## 👥 Tim Kami
-| ID Peserta | Nama | Role | Status |
-|---|---|---|---|
-| CFCC438D6Y1813 | Fairuz Istighfar | Full Stack | Aktif |
-| CFCC482D6X1288 | Dela Deliansyah | Full Stack | Aktif |
-| CDCC482D6Y0599 | Egi Julian | Data Science | Aktif |
-| CDCC319D6X1000 | Dini Arya Putri | Data Science | Aktif |
-| CACC482D6Y2469 | Mohammad Bisri Musthafa | AI Engineer | Aktif |
-| CACC404D6X0172 | Elisabeth Margaretta | AI Engineer | Aktif |
+## 👥 Our Team
 
----
-
-## Penjelasan Singkat SIDIAS
-
-**SIDIAS** adalah sebuah platform berbasis *Artificial Intelligence* (AI) multimodal yang dirancang untuk mendeteksi dan memprediksi potensi risiko stunting pada balita secara dini, cepat, dan akurat. Platform ini menggabungkan analisis data klinis antropometri dan analisis visual fisik balita guna memberikan pendekatan screening yang komprehensif bagi orang tua, kader posyandu, dan tenaga medis.
+| Participant ID | Name                    | Role         | Status |
+| -------------- | ----------------------- | ------------ | ------ |
+| CFCC438D6Y1813 | Fairuz Istighfar        | Full Stack   | Active |
+| CFCC482D6X1288 | Dela Deliansyah         | Full Stack   | Active |
+| CDCC482D6Y0599 | Egi Julian              | Data Science | Active |
+| CDCC319D6X1000 | Dini Arya Putri         | Data Science | Active |
+| CACC482D6Y2469 | Mohammad Bisri Musthafa | AI Engineer  | Active |
+| CACC404D6X0172 | Elisabeth Margaretta    | AI Engineer  | Active |
 
 ---
 
-## 🚀 Fitur Utama & Pendekatan AI Multimodal
+## SIDIAS Overview
 
-SIDIAS menggunakan pendekatan **Ensemble Model Architecture** untuk mengolah dua jenis modalitas data yang berbeda (*Multimodal Dataset*):
-
-* **Tabular Stunting Detection (Data Klinis):** Memprediksi status stunting menggunakan algoritma **Random Forest Classifier** berdasarkan data antropometri anak (Usia, Jenis Kelamin, Tinggi Badan, Berat Badan) serta fitur buatan klinis (*Feature Engineering*) seperti Indeks Massa Tubuh (IMT) dan Rasio Tinggi per Usia. Masalah *class imbalance* pada data diatasi menggunakan teknik **SMOTE**.
-* **Visual Stunting Detection (Data Gambar):** Melakukan analisis karakteristik fisik luar balita melalui input foto secara langsung menggunakan arsitektur *Deep Learning* **MobileNetV2** yang efisien dan optimal untuk dijalankan di lingkungan web/mobile.
+**SIDIAS** is a multimodal **Artificial Intelligence (AI)**-based platform designed to detect and predict the potential risk of stunting in young children at an early stage, quickly, and accurately. The platform combines anthropometric clinical data analysis with visual analysis of children's physical characteristics to provide a comprehensive screening approach for parents, community health workers, and medical professionals.
 
 ---
 
-## 🛠️ Alur Kerja Sistem (Data Pipeline & Integration)
+## 🚀 Key Features & Multimodal AI Approach
 
-1.  **Form Input & Capture:** Pengguna memasukkan data antropometri dan mengunggah foto fisik balita melalui antarmuka web.
-2.  **Preprocessing & Feature Engineering (Tabular):** Sistem secara otomatis menghitung nilai klinis IMT dan Rasio Tinggi per Usia berdasarkan input mentah (*data clean*).
-3.  **Data Standardization:** Data tabular disinkronisasikan menggunakan komponen `StandardScaler` (`scaler.pkl`) ke dalam format *Z-Score* desimal sebelum diproses oleh model.
-4.  **AI Dual Inference:** * Data klinis diproses oleh `random_forest_stunting_model.pkl`.
-    * Data visual foto diproses oleh model `MobileNetV2` (`.h5` / SavedModel).
-5.  **Ensemble Output:** Sistem mengombinasikan hasil prediksi untuk mengeluarkan diagnosis akhir status stunting balita beserta tingkat keyakinan (probabilitas) AI.
+SIDIAS uses an **Ensemble Model Architecture** to process two different types of data modalities (**Multimodal Dataset**):
+
+* **Tabular Stunting Detection (Clinical Data):** Predicts the child's stunting status using the **Random Forest Classifier** based on anthropometric data such as Age, Gender, Height, and Weight, along with engineered clinical features such as **Body Mass Index (BMI)** and **Height-for-Age Ratio**. Class imbalance in the dataset is addressed using the **SMOTE** technique.
+* **Visual Stunting Detection (Image Data):** Analyzes the external physical characteristics of young children from uploaded photos using the **MobileNetV2** deep learning architecture, which is efficient and suitable for deployment in web/mobile environments.
 
 ---
 
-## 💻 Tech Stack Proyek
+## 🛠️ System Workflow (Data Pipeline & Integration)
 
-Arsitektur aplikasi dibangun dengan ekosistem modern yang terbagi menjadi tiga komponen utama:
+1. **Form Input & Capture:** Users enter the child's anthropometric data and upload a photo of the child's physical appearance through the web interface.
+2. **Preprocessing & Feature Engineering (Tabular):** The system automatically calculates clinical values such as BMI and Height-for-Age Ratio based on the raw input data.
+3. **Data Standardization:** The tabular data is standardized using the `StandardScaler` component (`scaler.pkl`) into decimal **Z-Score** format before being processed by the model.
+4. **AI Dual Inference:**
 
-* **Front-End:** React.js, Vite, dan TailwindCSS (Memberikan antarmuka yang responsif, cepat, dan *user-friendly*).
-* **Back-End:** Node.js, Express.js, dan PostgreSQL (Sebagai basis data relasional untuk menyimpan riwayat rekam medis deteksi balita).
-* **AI Component:** Python, Scikit-Learn (Random Forest & Preprocessing), TensorFlow/Keras (MobileNetV2), Pandas, dan Joblib.
-
----
-
-## 🛠️ Prasyarat Instalasi (Prerequisites)
-
-Sebelum memulai instalasi, pastikan Anda telah memasang perangkat lunak berikut di komputer Anda:
-* **Docker** & **Docker Compose** (Disarankan Docker Desktop untuk Windows/macOS, atau Docker Engine untuk Linux)
-* **Git** (Untuk mengkloning kode sumber)
+   * Clinical data is processed using `random_forest_stunting_model.pkl`.
+   * The child's photo is processed using the **MobileNetV2** model (`.h5` / SavedModel).
+5. **Ensemble Output:** The system combines the prediction results from both models to produce the final stunting diagnosis along with the AI confidence level (probability).
 
 ---
 
-## 🚀 Langkah Instalasi & Menjalankan Aplikasi dengan Docker
+## 💻 Project Tech Stack
 
-Dengan menggunakan Docker, Anda tidak perlu memasang Node.js, Python, PostgreSQL, atau library AI secara manual di komputer Anda. Semua environment beserta dependensinya sudah dikontainerisasi secara otomatis.
+The application architecture is built using a modern technology ecosystem divided into three main components:
 
-### 1. Kloning Repositori & Navigasi ke Folder Full-Stack
-Jika Anda belum mengkloning repositori ini, jalankan perintah berikut di terminal Anda:
+* **Front-End:** React.js, Vite, and TailwindCSS — providing a responsive, fast, and user-friendly interface.
+* **Back-End:** Node.js, Express.js, and PostgreSQL — serving as the backend system and relational database for storing child screening and diagnosis history.
+* **AI Component:** Python, Scikit-Learn (Random Forest & Preprocessing), TensorFlow/Keras (MobileNetV2), Pandas, and Joblib.
+
+---
+
+## 🛠️ Installation Prerequisites
+
+Before starting the installation, make sure the following software is installed on your computer:
+
+* **Docker** & **Docker Compose** (Docker Desktop is recommended for Windows/macOS, or Docker Engine for Linux)
+* **Git** (for cloning the source code repository)
+
+---
+
+## 🚀 Installation & Running the Application with Docker
+
+By using Docker, you do not need to manually install Node.js, Python, PostgreSQL, or the required AI libraries on your computer. All environments and dependencies are automatically containerized.
+
+### 1. Clone the Repository & Navigate to the Full-Stack Folder
+
+If you have not cloned the repository yet, run the following commands in your terminal:
+
 ```bash
 git clone https://github.com/EgiJulian12/SIDIAS-.git
 cd SIDIAS-/Full-Stack
 ```
 
-### 2. Menjalankan Aplikasi (Menggunakan Image Jadi)
-Untuk mempermudah penggunaan di PC lain tanpa perlu build dari awal, silakan gunakan perintah berikut di dalam folder `Full-Stack/`:
+### 2. Run the Application (Using Pre-Built Images)
+
+To simplify deployment on another PC without building the application from scratch, run the following command inside the `Full-Stack/` folder:
+
 ```bash
 docker compose up -d
 ```
-*Perintah ini akan secara otomatis mengunduh (pull) image Postgres, Backend, dan Frontend dari registry Docker Hub, kemudian menginisialisasi skema database serta menjalankan aplikasinya.*
 
-Untuk memastikan semua kontainer berjalan dengan lancar, jalankan perintah:
+This command will automatically pull the PostgreSQL, Backend, and Frontend images from Docker Hub, initialize the database schema, and start the application.
+
+To verify that all containers are running properly, run:
+
 ```bash
 docker compose ps
 ```
 
-### 3. Menghentikan Aplikasi
-Untuk mematikan semua layanan aplikasi, jalankan perintah:
+### 3. Stop the Application
+
+To stop all application services, run:
+
 ```bash
 docker compose down
 ```
 
 ---
 
-## ⚙️ Build Ulang Image Lokal (Khusus Developer)
+## ⚙️ Rebuild Local Images (For Developers)
 
-Jika Anda melakukan perubahan pada kode program di Front-End atau Back-End dan ingin men-build ulang image Docker secara lokal di PC Anda, ikuti langkah berikut:
+If you make changes to the Front-End or Back-End source code and need to rebuild the Docker images locally, follow these steps:
 
-1. **Membangun Ulang (Build) Image Lokal:**
+1. **Build the Local Images:**
+
    ```bash
    docker compose -f docker-compose.build.yml build
    ```
-2. **Menjalankan Hasil Build Lokal:**
+
+2. **Run the Locally Built Images:**
+
    ```bash
    docker compose -f docker-compose.build.yml up -d
    ```
 
 ---
 
-## 🔑 Akun Login Default (Admin)
+## 🔑 Default Admin Login Credentials
 
-Ketika database PostgreSQL pertama kali dibuat, sistem backend secara otomatis menjalankan skema database dan membuat akun admin cadangan:
+When the PostgreSQL database is initialized for the first time, the backend automatically creates a default administrator account:
+
 * **NIK:** `admin`
 * **Password:** `admin123`
 
 ---
 
-## 🌐 Akses Layanan Aplikasi
+## 🌐 Application Access
+
 https://sidias-flame.vercel.app
 
 ---
 
-## Tautan Model AI
-Link Google Drive : https://drive.google.com/drive/folders/1ek88NugRZs3cUxqjJrG51oiQaKO582MK
+## 🤖 AI Model Link
+
+**Google Drive:**
+https://drive.google.com/drive/folders/1ek88NugRZs3cUxqjJrG51oiQaKO582MK
